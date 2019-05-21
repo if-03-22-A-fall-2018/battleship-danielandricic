@@ -42,13 +42,15 @@ void load_game()
          exit(1);
      }
 
-     for(int i = 0; i < FIELDSIZE; i++)
-     {
-       for (int j = 0; j < FIELDSIZE; j++)
-       {
-         fread(&my[i][j], sizeof(CellContent), 1, fptr);
-       }
-     }
+     fread(&last_id, sizeof(int), 1, fd);
+     printf("Last id: %d\n", last_id);
+     // fseek(fd, sizeof(int), SEEK_SET);
+    int n_count = fread(&student, sizeof(struct Student), 1, fd);
+
+    while (n_count > 0) {
+    printf("%d %s %s %d\n", student.id, student.first_name, student.last_name, student.age);
+    n_count = fread(&student, sizeof(struct Student), 1, fd);
+    }
      fclose(fptr);
 }
 
