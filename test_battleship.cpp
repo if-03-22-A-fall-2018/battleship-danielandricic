@@ -3,7 +3,7 @@
  *-----------------------------------------------------------------------------
  * Exercise Number: #exercise_number#
  * File:			test_battleship.c
- * Author(s):		Peter Bauer
+ * Author(s):	Daniel Andricic
  * Due Date:		#due#
  *-----------------------------------------------------------------------------
  * Description:

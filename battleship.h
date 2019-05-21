@@ -3,7 +3,7 @@
  * ---------------------------------------------------------
  * Exercise Number: 0
  * File:			battleship.h
- * Author:			Peter Bauer
+ * Author:			Daniel Andricic
  * Due Date:		#due#
  * ----------------------------------------------------------
  * Description:
@@ -12,7 +12,7 @@
  */
 #ifndef BATTLESHIP_H
 #define BATTLESHIP_H
-
+#include "test_file_setup.h"
 #define FIELDSIZE 10
 
 /**
