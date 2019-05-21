@@ -33,7 +33,6 @@ CellContent myGuesses[FIELDSIZE][FIELDSIZE];
 */
 void load_game()
 {
-     CellContent content;
      FILE *fptr;
 
      if ((fptr = fopen("battleship.my","rb")) == NULL){
@@ -47,7 +46,7 @@ void load_game()
      {
        for (int j = 0; j < FIELDSIZE; j++)
        {
-         fread(&my[i][j], sizeof(CellContent), 1, fptr); 
+         fread(&my[i][j], sizeof(CellContent), 1, fptr);
        }
      }
      fclose(fptr);
@@ -62,7 +61,14 @@ void load_game()
 */
 CellContent get_shot(int row, int col)
 {
-
+  if((row > FIELDSIZE && row >= 0) || (col > FIELDSIZE && row >= 0))
+  {
+    return OutOfRange;
+  }
+  else if(my[row][col] == Boat)
+  {
+    return my[row][col] = Water;
+  }
   return Water;
 }
 
@@ -75,11 +81,18 @@ CellContent get_shot(int row, int col)
 */
 bool shoot(int row, int col)
 {
-  if(row > FIELDSIZE || col > FIELDSIZE)
+  if((row > FIELDSIZE && row >= 0) || (col > FIELDSIZE && row >= 0))
   {
     return false;
   }
-  return true;
+  else if(get_my_guess(row, col) == Boat)
+  {
+    myGuesses[row][col] = Water;
+    op[row][col] = Water;
+    return true;
+  }
+
+  return false;
 }
 
 /**
@@ -90,5 +103,9 @@ bool shoot(int row, int col)
 */
 CellContent get_my_guess(int row, int col)
 {
-  return Water;
+  if((row > FIELDSIZE && row >= 0) || (col > FIELDSIZE && col >= 0))
+  {
+    return OutOfRange;
+  }
+  return myGuesses[row][col];
 }
