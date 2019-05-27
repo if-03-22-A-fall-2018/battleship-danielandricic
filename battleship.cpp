@@ -11,7 +11,6 @@
  *-----------------------------------------------------------------------------
 */
 #include <stdio.h>
-#include <stdlib.h>
 #include "battleship.h"
 
 static CellContent my[FIELDSIZE][FIELDSIZE];
@@ -40,8 +39,8 @@ void load_game()
      {
        for (int j = 0; j < FIELDSIZE; j++)
        {
-         fread(&myField[i][j], sizeof(CellContent), 1, my);
-         fread(&enemyField[i][j], sizeof(CellContent), 1, enemy);
+         fread(&my[i][j], sizeof(CellContent), 1, myField);
+         fread(&op[i][j], sizeof(CellContent), 1, enemyField);
          myGuesses[i][j] = Unknown;
        }
      }
@@ -59,11 +58,11 @@ void load_game()
 */
 CellContent get_shot(int row, int col)
 {
-  if((row > FIELDSIZE && row < 0) || (col > FIELDSIZE && col < 0))
+  if(row > -1 && row < FIELDSIZE && col > -1 && col < FIELDSIZE)
   {
-    return OutOfRange;
+    return my[row][col];
   }
-  return myF[row][col];
+  return OutOfRange;
 }
 
 /**
@@ -75,24 +74,21 @@ CellContent get_shot(int row, int col)
 */
 bool shoot(int row, int col)
 {
-  if((row <= FIELDSIZE && row >= 0) && (col <= FIELDSIZE && col >= 0))
-  {
-    for (int i = 0; i <= 1; i++)
-    {
-      for (int j = 0; j <= 1; j++)
-      {
-        if(row + i > -1 && row + i < SIZE && col + j > -1 && col + j < SIZE)
-        {
-          myGuesses[row + i][col + j] = enemyF[row + i][col + j];
-        }
-      }
-    }
-    return true;
-  }
-  else
+  if(!(row > -1 && row < FIELDSIZE && col > -1 && col < FIELDSIZE))
   {
     return false;
   }
+  for (int i = -1; i <= 1; ++i)
+  {
+    for (int j = -1; j <= 1; ++j)
+    {
+      if(row + i > -1 && row + i < FIELDSIZE && col + j > -1 && col + j < FIELDSIZE)
+      {
+        myGuesses[row + i][col + j] = op[row + i][col + j];
+      }
+    }
+  }
+  return true;
 }
 
 /**
@@ -103,9 +99,9 @@ bool shoot(int row, int col)
 */
 CellContent get_my_guess(int row, int col)
 {
-  if((row > FIELDSIZE && row < 0) || (col > FIELDSIZE && col < 0))
+  if(row > -1 && row < FIELDSIZE && col > -1 && col < FIELDSIZE)
   {
-    return OutOfRange;
+    return myGuesses[row][col];
   }
-  return myGuesses[row][col];
+  return OutOfRange;
 }
