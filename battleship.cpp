@@ -33,25 +33,21 @@ CellContent myGuesses[FIELDSIZE][FIELDSIZE];
 */
 void load_game()
 {
-     FILE *fptr;
+     FILE* myField = fopen("battleship.my", "r");
+     FILE* enemyField = fopen("battleship.op", "r");
 
-     if ((fptr = fopen("battleship.my","rb")) == NULL){
-         printf("Error! opening file");
-
-         // Program exits if the file pointer returns NULL.
-         exit(1);
+     for (int i = 0; i < FIELDSIZE; i++)
+     {
+       for (int j = 0; j < FIELDSIZE; j++)
+       {
+         fread(&myField[i][j], sizeof(CellContent), 1, my);
+         fread(&enemyField[i][j], sizeof(CellContent), 1, enemy);
+         myGuesses[i][j] = Unknown;
+       }
      }
 
-     fread(&last_id, sizeof(int), 1, fd);
-     printf("Last id: %d\n", last_id);
-     // fseek(fd, sizeof(int), SEEK_SET);
-    int n_count = fread(&student, sizeof(struct Student), 1, fd);
-
-    while (n_count > 0) {
-    printf("%d %s %s %d\n", student.id, student.first_name, student.last_name, student.age);
-    n_count = fread(&student, sizeof(struct Student), 1, fd);
-    }
-     fclose(fptr);
+     fclose(myField);
+     fclose(enemyField);
 }
 
 /**
@@ -63,15 +59,11 @@ void load_game()
 */
 CellContent get_shot(int row, int col)
 {
-  if((row > FIELDSIZE && row >= 0) || (col > FIELDSIZE && row >= 0))
+  if((row > FIELDSIZE && row < 0) || (col > FIELDSIZE && col < 0))
   {
     return OutOfRange;
   }
-  else if(my[row][col] == Boat)
-  {
-    return my[row][col] = Water;
-  }
-  return Water;
+  return myF[row][col];
 }
 
 /**
@@ -83,18 +75,24 @@ CellContent get_shot(int row, int col)
 */
 bool shoot(int row, int col)
 {
-  if((row > FIELDSIZE && row >= 0) || (col > FIELDSIZE && row >= 0))
+  if((row <= FIELDSIZE && row >= 0) && (col <= FIELDSIZE && col >= 0))
+  {
+    for (int i = 0; i <= 1; i++)
+    {
+      for (int j = 0; j <= 1; j++)
+      {
+        if(row + i > -1 && row + i < SIZE && col + j > -1 && col + j < SIZE)
+        {
+          myGuesses[row + i][col + j] = enemyF[row + i][col + j];
+        }
+      }
+    }
+    return true;
+  }
+  else
   {
     return false;
   }
-  else if(get_my_guess(row, col) == Boat)
-  {
-    myGuesses[row][col] = Water;
-    op[row][col] = Water;
-    return true;
-  }
-
-  return false;
 }
 
 /**
@@ -105,7 +103,7 @@ bool shoot(int row, int col)
 */
 CellContent get_my_guess(int row, int col)
 {
-  if((row > FIELDSIZE && row >= 0) || (col > FIELDSIZE && col >= 0))
+  if((row > FIELDSIZE && row < 0) || (col > FIELDSIZE && col < 0))
   {
     return OutOfRange;
   }
